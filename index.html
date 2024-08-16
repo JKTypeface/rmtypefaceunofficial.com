@@ -58,7 +58,7 @@ body
    box-sizing: border-box;
    float: left;
    padding: 3px 3px 3px 3px;
-   width: %;
+   width: 33.33333333%;
    text-align: center;
    vertical-align: top;
 }
@@ -86,7 +86,7 @@ body
 }
 #PhotoGallery1 .visible-col3
 {
-   display: none;
+   display: block;
 }
 #PageFooter1
 {
@@ -103,6 +103,38 @@ body
 <a href="https://www.quickandeasywebbuilder.com" target="_blank"><img src="images/builtwithqwb6.png" alt="Quick 'n Easy Web Builder" style="position:absolute;left:10px;top:10px;margin: 0;border-width:0;z-index:9999"></a>
 <div id="wb_PhotoGallery1" style="position:absolute;left:176px;top:312px;width:462px;height:97px;z-index:2;">
 <div id="PhotoGallery1">
+<div class="thumbnails">
+<?php
+   $images_folder = "images/";
+   $html = "";
+   $images = array();
+   $dir = opendir($images_folder);
+   while ($filename = readdir($dir))
+   {
+      $ext = pathinfo($filename, PATHINFO_EXTENSION);
+      $ext = strtolower($ext);
+      if ($ext == 'gif' || $ext == 'jpeg' || $ext == 'jpg' || $ext == 'png' || $ext == 'webp')
+      {
+         $images[] = $filename;
+      }
+   }
+   closedir($dir);
+   sort($images);
+   $count = 0;
+   foreach($images as $filename)
+   {
+      $count++;
+      $exif = exif_read_data($images_folder.$filename);
+      $title = trim($exif['ImageDescription']);
+      $html .= "<div class=\"thumbnail\"><a href=\"$images_folder$filename\"><img alt=\"$title\" id=\"PhotoGallery1_img$count\" src=\"$images_folder$filename\" title=\"$title\"></a></div>";
+      if ($count % 3 == 0)
+      {
+         $html .= "<div class=\"clearfix visible-col3\"></div>";
+      }
+   }
+   echo $html;
+?>
+</div>
 </div></div>
 <div id="wb_Shape1" style="position:absolute;left:5px;top:7px;width:133px;height:36px;z-index:3;">
 <img src="images/img0001.png" id="Shape1" alt="" title="" style="border-width:0;width:133px;height:36px"></div>
